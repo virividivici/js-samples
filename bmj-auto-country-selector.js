@@ -1,79 +1,86 @@
 /*============================BMJ Auto Country==============================*/
 /* =======================================================================   
 * BmjAutoCountrySelector
-* Converts any inputfile assigned to, into a Auto compelete country drop down 
+* Converts any input assigned to, into a Auto compelete country drop down like
 * which display the list of all countries coming from a jsonp with their flags 
 * @param idOfTheField  : id of the input converting into country drop down
-* bmjIcsCountries  (jasonp) : List of ICS countries
+* bmjbmjIcsCountries  (jasonp) : List of ICS countries included via requirJS
+* on top level 
 *===========================================================================*/
-BmjAutoCountrySelector = function()
+
+var BmjAutoIcsCountrySelector = function() 
 {
-    
-    this.minChars      = 1;
-    this.field         = null;
-    this.countryLoopId = 0;
-    this.helper        = null;
-    this.helperContent = "";
-    
+	
+	this.minChars = 1;
+	this.field = null;
+	this.countryLoopId = 0;
+	this.containerId = "bmj-myaccount-widget-registration-auto-country-container";
+	this.containerContent = "";
+	this.countryValueFeild = "bmj-myaccount-widget-reg-countryCode";
+
 }
 
-BmjAutoCountrySelector.prototype = 
+BmjAutoIcsCountrySelector.prototype = 
 {
-    
-    init : function(idOfTheField)
-    {
-       
-        this.field = document.getElementById(idOfTheField);
-        
-        if (!this.field)
-        {
-            alert("Wrong input !");
-        }
-       
-        else
-        {
-            this.createHelper();
-            this.field.onfocus = this.onFieldIn;
-            this.field.onkeydown = this.onFieldInkeyup;
-            this.field.onblur = this.onFieldOut;
-        }
-    },
-    
-    //triggers when focused on country input
-    onFieldIn : function()
-    {
-    
-        bcs.loop();
-        
-    },
-    
-    //closes the auto complete on blur
-    onFieldOut : function()
-    {
-     
-        clearTimeout(bcs.countryLoopId);
-      //  setTimeout("bcs.hideHelper()", 600);
-        
-    },
-    
-    //scroll the country list up and down with the arrow keys
+	
+	init:function(idOfTheField) 
+	{
+		this.field = document.getElementById(idOfTheField);
+
+		if(!this.field) 
+		{
+			
+			alert("No Element found.");
+			//Not found the element to hope up the event to
+		} 
+			
+			else
+
+		{
+			//initiating the dropdown/events
+			this.createContainer();
+			this.field.onfocus = this.onFieldIn;
+			this.field.onblur = this.onFieldOut;
+
+		}
+	},
+
+	onFieldIn:function() 
+	{
+		
+		BAIC.loop();
+
+	},
+
+	onFieldOut:function() 
+	{
+		
+		clearTimeout(BAIC.countryLoopId);
+		setTimeout("BAIC.hideContainer()", 600);
+
+	},
+
+     //scroll the country list up and down with the arrow keys
     onFieldInkeyup : function(e)
     {
         e = e || window.event;
+
+        var countryList = document.getElementById(this.containerId).children[0]
+        var elParent = document.getElementById(this.containerId);
+        var elements = elParent.getElementByTagName('a');
        
-        if (e.keyCode == '38') { // down arrow
+        if (e.keyCode === '38') 
+        { // down arrow
             //has the dropdown list been rendered
-            if(document.getElementById("bmj-myaccount-widget-registration-auto-country-helper").children[0] != null){
-                var elParent = document.getElementById('bmj-myaccount-widget-registration-auto-country-helper' )
-                var elements = elParent.getElementsByTagName("a");
-             
-                
+            if(countryList !== null)
+            {
+                                
                 var counter = 0;
 
-                
                 for ( var i = 0; i < elements.length; i++)
-                {
-                   if (elements[i].classList.contains("highlighted")) 
+            	{
+
+                    if (elements[i].classList.contains("highlighted")) 
                     {
                         counter ++;
                         //alert("counter = " + counter)
@@ -83,8 +90,8 @@ BmjAutoCountrySelector.prototype =
                             counter --;
                             counter --;
                             
-                            elements[i].classList.remove('highlighted');
-                            elements[counter].classList.add('highlighted');
+                            elements[i].classList.removeClass('highlighted');
+                            elements[counter].classList.addClass('highlighted');
                             elements[counter].scrollIntoView();
                         }                       
                         
@@ -95,10 +102,9 @@ BmjAutoCountrySelector.prototype =
                     {
                         counter ++;                         
                     }
-                   
+
                 }
-
-
+              
             }
         }
         else 
@@ -106,39 +112,34 @@ BmjAutoCountrySelector.prototype =
          { // up arrow
             
             //has the dropdown list been rendered
-            if(document.getElementById("bmj-myaccount-widget-registration-auto-country-helper").children[0] != null)
+            if( countryList !== null)
             {
                 
                 //is the a 'a' elemnt of the helper that is set to highlighted      
-                var current = document.getElementById('#bmj-myaccount-widget-registration-auto-country-helper a').hasClass('highlighted');
-                //$curr = $('bmj-myaccount-widget-registration-auto-country-helper').find('a.highlighted');
-                
-                var elements = current.getElementsByTagName("a");
-                //var elements = $('#countryDropDownEntry a' );
-                
+                var current = elParent.getElementByTagName('a').classList.contains('highlighted');
+
                 if(!current)
                 {
                     //alert("highlighted class not assigned");
                     //$curr.addClass('highlighted');
-                    elements[0].classList.add('highlighted');
+                    elements[0].classList.addClass('highlighted');
                     elements[0].scrollIntoView();
                 }
                 else
                 {
                     
                     var counter = 0;
-
-                    for ( var i = 0; i < elements.length; i++)
-                    {
-
-                        if (elements[i].hasClass("highlighted")) 
+                   for ( var i = 0; i < elements.length; i++)
+            		{
+                        
+                        if (elements[i].classList.contains("highlighted")) 
                         {
                             counter ++;
                             
                             if(counter < elements.length)
                             {
                                 elements[i].classList.removeClass('highlighted');
-                                elements[counter].classList.addClass('highlighted');
+                        		elements[counter].classList.addClass('highlighted');
                                 elements[counter].scrollIntoView();
                             }
                             
@@ -150,33 +151,30 @@ BmjAutoCountrySelector.prototype =
                         {
                             counter ++;                         
                         }
-
-                    }
-
-                             
+                    }              
                 }  //else                             
             }// if
         }//if
          else if (e.keyCode == '13')
          {
-             if(document.getElementById("bmj-myaccount-widget-registration-auto-country-helper").children[0] != null)
+             if( countryList !== null )
              {
-                 var elements = $('#bmj-myaccount-widget-registration-auto-country-helper a.highlighted' ).trigger('click');
+                 var elements =  elParent.getElementByTagName('a').classList.contains('highlighted').onClick();
                 // setCountry();
              }
              
          }
         
     },
-    
-    //generates the country list
-    loop : function()
-    
-    {
-       
-        var list = "";
-        var value = bcs.field.value;
+
+
+	loop:function() 
+	{
+		
+		var list = "";
+		var value = BAIC.field.value;
         var bmjIcsCountries = getIcsCountries();
+
         if (value.length >= this.minChars)
         {
             var numOfCountries = bmjIcsCountries.length;
@@ -194,102 +192,89 @@ BmjAutoCountrySelector.prototype =
                             + bmjIcsCountries[i].countryCode
                             + '\');" href="#"><i class="icon-flag-'
                             + bmjIcsCountries[i].countryCode + '"></i>'
-                            + bmjIcsCountries[i].countryName + '</a></div>'
+                            + bmjIcsCountries[i].countryName + '</a></div>';
                 }
             }
         }
-       
-        if (list != "")
-        {
-          
-            if (this.helperContent != list)
-            {
-               
-                this.helperContent = list ;
-                this.helper.innerHTML = this.helperContent;
-                
-            }
-            
-            this.showHelper();
-            
-        }
-        
-        else
-        {
-           
-            this.hideHelper();
-            
-        }
-        
-        bcs.countryLoopId = setTimeout("bcs.loop()", 200);
-    },
-    
-    //set the value of the selected country into the form feild
+
+		if(list != "") 
+		{
+			if(this.containerContent != list) 
+			{
+				
+				this.containerContent = list;
+				this.container.innerHTML = this.containerContent;
+
+			}
+
+			this.showContainer();
+		} 
+		 else 
+		{
+			
+			this.hideContainer();
+
+		}
+
+		BAIC.countryLoopId = setTimeout("BAIC.loop()", 200);
+	},
+
+	//set the value of the selected country into the form feild
     setCountry : function(country, countryCode)
     {
          
         this.field.value = country;
-        document.getElementById('bmj-myaccount-widget-reg-countryCode').value = countryCode;
-        this.hideHelper();
+        document.getElementById(this.countryValueFeild).value = countryCode;
+        this.hideContainer();
         $(bmjMyAccountWigetRegistration.form.termsAccepted).focus();  
         return false;
         
     },    
-    
-    
-    // creating the autcoplete Helper
-    createHelper : function()
-    {
-        
-        this.helper = document.createElement("div");
-        this.helper.style.width = (this.field.offsetWidth - 22) + "px";
-        this.helper.setAttribute("id",
-                "bmj-myaccount-widget-registration-auto-country-helper");
+
+	
+	createContainer:function() 
+	{
+		
+        var container = document.createElement("div");
+        container.style.width = (this.field.offsetWidth - 22) + "px";
+        container.setAttribute("id", this.containerId);
        
-        this.helper.innerHTML = "";
+        container.innerHTML = "";
        
         document.getElementById("countryFieldHelperHolder").appendChild(
-                this.helper);
+                container);
         
-        this.positionHelper();
-        this.hideHelper();
-    },
-    
-    positionHelper : function()
-    {
-        
-        var position = {
-            x : 0,
-            y : 0
-        };
-        
-        var e = this.field;
-       
-        while (e)
-        {
-           
-            position.x += e.offsetLeft;
-            position.y += e.offsetTop;
-            e = e.offsetParent;
-            
-        }
-       
-        this.helper.style.left = position.x + "px";
-        this.helper.style.top = (position.y + this.field.offsetHeight) + "px";
-    },
-   
-    showHelper : function()
-    {
-        
-        this.helper.style.display = "block";
+        this.positionContainer();
+		this.hideContainer();
 
-    },
-  
-    hideHelper : function()
-    {
-        this.helper.style.display = "none";
+	},
 
-    }
+	positionContainer:function() 
+	{
+		var position = {x:0, y:0};
+		var e = this.field;
+		while(e) 
+		{
+			position.x += e.offsetLeft;
+			position.y += e.offsetTop;
+			e = e.offsetParent;
+		}
+
+		this.container.style.left = position.x + "px";
+		this.container.style.top = (position.y + this.field.offsetHeight)+ "px";
+	},
+
+	showContainer:function() 
+	{
+		this.container.style.display = "block";
+	},
+
+	hideContainer:function() 
+	{
+		this.container.style.display = "none";
+	}
 }
 
-var bcs = new BmjAutoCountrySelector();
+var BAIC = new BmjAutoIcsCountrySelector();
+
+
