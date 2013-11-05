@@ -1,6 +1,6 @@
 /* ===========================================================================    
 * 
-* QUnit Acceptance Test Framework with iFrame, Require JS, and jQuery Simulate
+* QUnit Acceptance Test Framework with  Require JS, and jQuery Simulate
 * ==========================================================================*/
 (function () {
 
@@ -10,13 +10,13 @@
 
                         // Libraries
                         'jQuery': '../../js/libs/jquery-1.8.2.min',
-                        'Underscore': '../../js/libs/underscore'
+                        'MyAccount': '../../js/libs/myaccount'
                 },
                 shim: {
                         'jQuery': {
                                 exports: '$'
                         },
-                        'Underscore': {
+                        'MyAccount': {
                                 exports: '_'
                         }
                 }
@@ -27,7 +27,7 @@
 
 define([
         'jQuery',
-        'Underscore'
+        'MyAccount'
 ], function($$, Underscore) {
                 var referencePath = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 
